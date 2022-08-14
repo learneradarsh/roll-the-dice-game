@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import Dice from './Dice';
 import { nanoid } from 'nanoid'
+import Confetti from 'react-confetti'
 
 function App() {
   const [dice, setDice] = useState(() => initDice());
@@ -65,6 +66,9 @@ function App() {
 
   return (
     <div className="app-container">
+      {
+        resetGame && <Confetti/>
+      }
       <h2>Roll The Dice</h2>
       {
         resetGame &&
@@ -82,8 +86,8 @@ function App() {
       <div className='btn-container'>
         {
           !resetGame ? 
-          <button className='btn roll-btn' type='button' onClick={handleDiceRoll}>Roll</button> :
-          <button className='btn reset-btn' type='button' onClick={handleResetGame}>Reset</button>
+          <button className='btn roll-btn' type='button' onClick={handleDiceRoll}>Roll Dice</button> :
+          <button className='btn reset-btn' type='button' onClick={handleResetGame}>New Game</button>
         }
         
       </div>
