@@ -9,7 +9,8 @@ function App() {
   const [luckyNumber, setLuckyNumber] = useState(() => initLuckyNumber());
 
   useEffect(() => {
-    if([...dice].every(item => item.isSelected === true)) {
+    if([...dice].every(item => item.isSelected === true)
+    && [...dice].every(item => item.diceNum === dice[0].diceNum)) {
       setResetGame(true);
     }
   }, [dice])
