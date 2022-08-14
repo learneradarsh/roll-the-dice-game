@@ -13,12 +13,47 @@ code {
     monospace;
 }
 
+
+.app-container {
+  margin: 0 20%;
+  text-align: center;
+}
+
+.dice-section {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+} 
+
 .dice {
-  padding: 10px;
+  padding: 40px;
   background-color: white;
+  width: 18%;
+  margin: 10px 0;
+  font-size: 2rem;
 }
 
 .selected {
   background-color: blue;
   color: white;
+}
+
+.btn-container {
+  margin: 20px 0;
+}
+.btn {
+  border: none;
+  padding: 10px 40px;
+  font-size: 1.2rem;
+  font-weight: bolder;
+}
+
+.roll-btn {
+  background-color: blue;
+  color: white;
+}
+
+.reset-btn {
+  background-color: blanchedalmond;
+  color: black;
 }

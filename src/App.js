@@ -1,13 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Dice from './Dice';
 import { nanoid } from 'nanoid'
 
 function App() {
-  const [numberArr, setNumberArr] = useState(() => generateDices());
+  const [dice, setDice] = useState(() => initDice());
   const [resetGame, setResetGame] = useState(() => false);
+  const [luckyNumber, setLuckyNumber] = useState(() => initLuckyNumber());
+
+  useEffect(() => {
+    if([...dice].every(item => item.isSelected === true)) {
+      setResetGame(true);
+    }
+  }, [dice])
+
+  function initLuckyNumber() {
+    return Math.ceil(Math.random() * 6);
+  }
   
-  function generateDices() {
+  function initDice() {
     const newDices = [];
     for(let i=0; i<10; i++) {
       newDices.push({
@@ -19,8 +30,8 @@ function App() {
     return newDices;
   }
 
-  function generateDicesForUnSelected() {
-    const newDices = [...numberArr];
+  function rollDiceForUnSelected() {
+    const newDices = [...dice];
     return newDices.map(item => {
       if(!item.isSelected) {
         item.diceNum = Math.ceil(Math.random() * 6);
@@ -29,17 +40,18 @@ function App() {
     });
   }
 
-  const handleRoll = () => {
-    if([...numberArr].every(item => item.isSelected === true)) {
-      setResetGame(prevValue => !prevValue);
-      setNumberArr(generateDices());
-    } else {
-      setNumberArr(generateDicesForUnSelected());
-    }
+  function handleResetGame() {
+    setDice(initDice());
+    setLuckyNumber(initLuckyNumber());
+    setResetGame(false);
+  }
+
+  const handleDiceRoll = () => {
+    setDice(rollDiceForUnSelected());
   }
 
   const handleDiceSelect = (id) => {
-    setNumberArr(prevValue => prevValue.map(item => {
+    setDice(prevValue => prevValue.map(item => {
       if(item.id === id) {
         item = {
           ...item,
@@ -51,19 +63,28 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <h2>Tenzies</h2>
+    <div className="app-container">
+      <h2>Roll The Dice</h2>
+      {
+        resetGame &&
+        <strong>You win the game!!</strong>
+      }
       <article>
-        Roll until message here
+        Roll until you get your lucky number <strong>{luckyNumber}</strong>
       </article>
 
       <section className='dice-section'>
         {
-          numberArr.length && numberArr.map(item => <Dice key={item.id} item={item} on={handleDiceSelect}/>)
+          dice.length && dice.map(item => <Dice key={item.id} item={item} on={handleDiceSelect}/>)
         }
       </section>
-      <div>
-        <button type='button' onClick={handleRoll}>{ resetGame ? 'Reset' : 'Roll'}</button>
+      <div className='btn-container'>
+        {
+          !resetGame ? 
+          <button className='btn roll-btn' type='button' onClick={handleDiceRoll}>Roll</button> :
+          <button className='btn reset-btn' type='button' onClick={handleResetGame}>Reset</button>
+        }
+        
       </div>
     </div>
   );
