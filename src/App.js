@@ -1,23 +1,70 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import Dice from './Dice';
+import { nanoid } from 'nanoid'
 
 function App() {
+  const [numberArr, setNumberArr] = useState(() => generateDices());
+  const [resetGame, setResetGame] = useState(() => false);
+  
+  function generateDices() {
+    const newDices = [];
+    for(let i=0; i<10; i++) {
+      newDices.push({
+        id: nanoid(),
+        diceNum: Math.ceil(Math.random() * 6),
+        isSelected: false
+      });
+    }
+    return newDices;
+  }
+
+  function generateDicesForUnSelected() {
+    const newDices = [...numberArr];
+    return newDices.map(item => {
+      if(!item.isSelected) {
+        item.diceNum = Math.ceil(Math.random() * 6);
+      }
+      return item;
+    });
+  }
+
+  const handleRoll = () => {
+    if([...numberArr].every(item => item.isSelected === true)) {
+      setResetGame(prevValue => !prevValue);
+      setNumberArr(generateDices());
+    } else {
+      setNumberArr(generateDicesForUnSelected());
+    }
+  }
+
+  const handleDiceSelect = (id) => {
+    setNumberArr(prevValue => prevValue.map(item => {
+      if(item.id === id) {
+        item = {
+          ...item,
+          isSelected: !item.isSelected
+        }
+      }
+      return item;
+    }));
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Tenzies</h2>
+      <article>
+        Roll until message here
+      </article>
+
+      <section className='dice-section'>
+        {
+          numberArr.length && numberArr.map(item => <Dice key={item.id} item={item} on={handleDiceSelect}/>)
+        }
+      </section>
+      <div>
+        <button type='button' onClick={handleRoll}>{ resetGame ? 'Reset' : 'Roll'}</button>
+      </div>
     </div>
   );
 }
